@@ -1,0 +1,67 @@
+Nume: Ditu Alexandru Mihai
+Grupa/Serie: 323 CA
+Tema 3 PA
+
+Problema 1:
+	Aceasta problema am rezolvat-o folosind Graph.java si MaxFlow.java din
+laborator, facand desigur mici modificari.
+	De aceste 2 clase am avut nevoie doar pentru a calcula fluxul maxim printr-un
+graf.
+	Problema principala a fost cum sa reprezint graful pentru a putea calcula
+daca o echipa poate sa castige sau nu. Mentionez ca informatii suplimentare despre
+problema am gasit aici[0];
+	Ideea este urmatoarea:
+		Trbuie sa creez un graf, care 5 tipuri diferite de noduri:
+sursa, noduri tip g(i,j), noduri tip i/j, drena.
+
+	Mai intai explic urmatoarele notatii:
+	w[i] = scorul echipei i
+	g[i][j] = nr de meciuri pe care le mai are de jucat echipa i contra echipa j
+
+	nodurile de tip g(i,j) reprezinta meciurile care mai sunt de jucat intre
+	echipele i si j, mai putin echipa x (cea despre care vreau sa aflu daca 
+	poate castiga sau nu)
+
+	nodurile de tip i, j reprezinta nodurile corespunzatoare echipelor i si j,
+	mai putin echipa x.
+
+	In final graful trebuie sa aibe urmatoarele muchii:
+	
+	- de la sursa la nodurile g(i,j), avand capacitatea = 2 * g[i][j] (cate puncte
+		poate castiga echipa i/j daca invinge in toate meciurile)
+	- de la nodurile g(i,j) la nodurile i, respectiv j, avand capacitatea = infinit
+	- de la toate nodurile de tipul i/j, la drena, avand capacitatea = w[x] + 2 * g[x] - w[i/j]
+		adica: w[x] + 2*g[x] cate puncte poate avea maxim echipa x - cate puncte are echipa i sau echipa j
+		(adica w[i] sau w[j]).
+			in cazul in care aceasta capacitate este negativa este clar ca ca echipa x a pierdut
+			campionatul (deoarece ea are mai putine puncte decat echipa i, fara ca echipa i sa mai joace niciun meci)
+
+	Acum ca am creeat graful, pentru a testa daca echipa X poate sa castige, trebuie
+verificat daca toate muchiile ce ies din sursa sunt saturate.
+	Se repeta procedeul pentru toate echipele din questions[].
+
+[0] http://people.orie.cornell.edu/dpw/orie633/LectureNotes/lecture2.pdf
+
+Problema 2:
+	 
+	Ideea este urmatoarea:
+		Fac Dijkstra retinand si starea zarului. Astfel, plecand din pozitia
+	initiala (startX, startY) "mut" zarul in toate casutele din "jurul" meu, atata timp
+	cat este o casuta valida. Astfel creez noi noduri, carora le actualizez si distanta fata
+	de sursa, iar apoi le introduc in coada.
+		In momentul in care le scot din coada, si repet procedeul de mai sus, am grija sa
+	pastrez doar nodurile "noi" adica: chiar daca exista deja un nod creeat, tin cont si
+	de starea zarului, deci pot sa ajung intr-o casuta, pe 2 drumuri diferite, dar sa am
+	2 configuratii diferite ale zarului, care vor genera mai tarziu 2 drumuri, unul mai scurt
+	altul mai lung. Deoarece nu pot sa anticipez care din ele este mai bun, le salvez pe toate.
+	Astfel pot avea maxim 24 de combinatii diferite.
+
+		Pentru a face mutarile zarului nu am gasit alta solutie decat sa scriu de mana tranzitiile
+	fetelor.
+
+		Mentionez ca am avut probleme cu timpul si am obtinut imbunatatiri schimband coada din
+	PriorityQueue, in ArrayList iar apoi in final (si cea mai buna solutie) a fost sa folosesc
+	LinkedList (plus mici imbunatatiri la algoritm).
+
+		Totusi, am scris si pe forum despre chestia asta, la mine pe laptop imi trec toate testele
+	cu timpi foarte buni (sub o secunda la toate testele), iar pe Vmchecker ultimele 2 teste imi ies din timp.
